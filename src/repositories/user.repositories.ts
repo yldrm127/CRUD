@@ -24,3 +24,19 @@ export const getuserById=async(id:string)=>{
         throw error;
     }
 }
+export const updateUser=async(id:string,user:typeof userTypes)=>{
+    try{
+        const updatedUser=await userSchema.findByIdAndUpdate(id,user,{new:true});
+        return updatedUser;
+    }catch(error){
+        throw error;
+    }
+}
+export const deleteUser=async(id:string)=>{
+    try{
+        const deletedUser=await userSchema.findByIdAndDelete(id);
+        return deletedUser;
+    }catch(error){
+        throw error;
+    }
+}
