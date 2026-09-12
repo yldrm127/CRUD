@@ -1,8 +1,8 @@
-import {getAllUsersService,getUserByIdService,createUserService,updateUserService,deleteUserService} from "../services/user.services";
-import {Response,Request} from "express";
-import type {ApiResponse} from "../types/response.types";
-import type {userTypes} from "../types/user.types";
-import {MESSAGE} from "../enums/message.enums";
+import {getAllUsersService,getUserByIdService,createUserService,updateUserService,deleteUserService} from "../services/user.services.js";
+import type { Response, Request } from "express";
+import type {ApiResponse} from "../types/response.types.js";
+import type {userTypes} from "../types/user.types.js";
+import {MESSAGE} from "../enums/message.enums.js";
 export const createUserController=async(req:Request,res:Response)=>{
     try{
         const user=await createUserService(req.body);
@@ -10,6 +10,7 @@ export const createUserController=async(req:Request,res:Response)=>{
     }catch(error){
         const response: ApiResponse<userTypes> = {
             message: MESSAGE.ERROR_CREATING_USER,
+            error: error instanceof Error ? error.message : String(error),
             data:null
         }
         res.status(500).json(response);
@@ -22,6 +23,7 @@ export const getAllUsersController=async(req:Request,res:Response)=>{
     }catch(error){
         const response: ApiResponse<userTypes> = {
             message: MESSAGE.ERROR_GETTING_USERS,
+            error: error instanceof Error ? error.message : String(error),
             data:null
         }
         res.status(500).json(response);
@@ -33,6 +35,7 @@ export const getUserByIdController=async(req:Request,res:Response)=>{
         if(!user){
             const response: ApiResponse<userTypes> = {
                 message: MESSAGE.USER_NOT_FOUND,
+
                 data:null
             }
             return res.status(404).json(response);
@@ -41,6 +44,7 @@ export const getUserByIdController=async(req:Request,res:Response)=>{
     }catch(error){
         const response: ApiResponse<userTypes> = {
             message: MESSAGE.SERVER_ERROR,
+            error: error instanceof Error ? error.message : String(error),
             data:null
         }
         res.status(500).json(response);
@@ -60,6 +64,7 @@ export const updateUserController=async(req:Request,res:Response)=>{
     }catch(error){
         const response: ApiResponse<userTypes> = {
             message: MESSAGE.SERVER_ERROR,
+            error: error instanceof Error ? error.message : String(error),
             data:null
         }
         res.status(500).json(response);
@@ -79,6 +84,7 @@ export const deleteUserController=async(req:Request,res:Response)=>{
     }catch(error){
         const response: ApiResponse<userTypes> = {
             message: MESSAGE.SERVER_ERROR,
+            error: error instanceof Error ? error.message : String(error),
             data:null
         }
         res.status(500).json(response);
