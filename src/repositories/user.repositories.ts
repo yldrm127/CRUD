@@ -12,9 +12,9 @@ export const createUser=async(user: z.infer<typeof userSchema>)=>{
         return newUser;
  
 } 
-export const getAllUsers=async()=>{
+export const getAllUsers=async(page:number=1,limit:number=10)=>{
     try{
-        const users=await userModel.find({isActive:true});
+        const users=await userModel.find({isActive:true}).skip((page-1)*limit).limit(limit);
         return users;
     }catch(error){
         throw new AppError("Error fetching users",500);    

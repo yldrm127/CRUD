@@ -11,8 +11,8 @@ export const createUserService = async (user: z.infer<typeof userSchema>) => {
     return userData;
 };
 
-export const getAllUsersService = async () => {
-    return await getAllUsers();
+export const getAllUsersService = async (page: number = 1, limit: number = 10) => {
+    return await getAllUsers(page, limit);
 };
 
 export const getUserByIdService = async (id: string) => {

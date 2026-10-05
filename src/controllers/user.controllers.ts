@@ -21,7 +21,8 @@ export const createUserController = async (
     return res.status(201).json(user);
 };
 export const getAllUsersController=async(req:Request,res:Response)=>{
-        const users=await getAllUsersService();
+        const { page, limit } = req.query;
+        const users=await getAllUsersService(Number(page), Number(limit));
         res.status(200).json(users);
 }
 export const getUserByIdController=async(req:Request,res:Response)=>{
