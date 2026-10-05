@@ -2,6 +2,7 @@ import type { z } from "zod";
 import { userSchema }from "../types/user.types.js";
 import userModel from "../model/user.js";
 import { AppError } from "../config/appError.js";
+
 export const createUser=async(user: z.infer<typeof userSchema>)=>{
   
         const newUser=await userModel.create({
@@ -12,14 +13,61 @@ export const createUser=async(user: z.infer<typeof userSchema>)=>{
         return newUser;
  
 } 
-export const getAllUsers=async(page:number=1,limit:number=10)=>{
-    try{
-        const users=await userModel.find({isActive:true}).skip((page-1)*limit).limit(limit);
-        return users;
-    }catch(error){
-        throw new AppError("Error fetching users",500);    
+export const getAllUsers = async (
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+    role?: string,
+    isActive?: boolean
+) => {
+console.log("Repository params:", {
+    page,
+    limit,
+    search,
+    role,
+    isActive
+});
+    const filter: Record<string, unknown> = {};
+
+    if (search) {
+        filter.$or = [
+            { name: { $regex: search, $options: "i" } },
+            { surname: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } }
+        ];
     }
-} 
+
+    if (role) {
+        filter.role = role;
+    }
+
+    if (isActive !== undefined) {
+        filter.isActive = isActive;
+    }
+
+    try {
+        console.log("Filter:", filter); // Debugging line to check the filter object
+        const users = await userModel
+            .find(filter)
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const total = await userModel.countDocuments(filter);
+
+        return {
+            users,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
+
+    } catch (error) {
+
+        throw new AppError("Error fetching users", 500);
+
+    }
+};
 export const getuserById=async(id:string)=>{
     try{
         const user=await userModel.findById(id).where({isActive:true});

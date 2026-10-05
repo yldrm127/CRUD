@@ -21,8 +21,25 @@ export const createUserController = async (
     return res.status(201).json(user);
 };
 export const getAllUsersController=async(req:Request,res:Response)=>{
-        const { page, limit } = req.query;
-        const users=await getAllUsersService(Number(page), Number(limit));
+        const page = Number(req.query.page) || 1;
+const limit = Number(req.query.limit) || 10;
+
+const search =
+    typeof req.query.search === "string"
+        ? req.query.search
+        : undefined;
+
+const role =
+    typeof req.query.role === "string"
+        ? req.query.role
+        : undefined;
+
+const isActive =
+    req.query.isActive === undefined
+        ? undefined
+        : req.query.isActive === "true";
+
+        const users=await getAllUsersService(page, limit, search, role, isActive);
         res.status(200).json(users);
 }
 export const getUserByIdController=async(req:Request,res:Response)=>{
