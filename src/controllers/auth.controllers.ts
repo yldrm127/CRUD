@@ -3,13 +3,20 @@ import type { Request, Response } from "express";
 import { userSchema } from "../types/user.types.js";
 import { AppError } from "../config/appError.js";
 import { MESSAGE } from "../enums/message.enums.js";
+import type { log } from "node:console";
 export const loginController= async(req:Request,res:Response,)=>{
     const { email, password } = req.body;
-    const login=await loginServices(email,password)
-    return res.status(200).json({
+    const {refreshToken,...login}=await loginServices(email,password)
+    return res.cookie("refreshToken",refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/api/auth"
+}).status(200).json({
         message: "Login successful",
         data: login
     });
+;
 }
 export const registerController = async (
     req: Request,
@@ -25,6 +32,7 @@ export const registerController = async (
         );
     }
 
+    
     const user = await registerService(req.body);
     return res.status(201).json(user);
 };

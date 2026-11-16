@@ -3,6 +3,7 @@ import { userSchema }from "../types/user.types.js";
 import userModel from "../model/user.js";
 import { AppError } from "../config/appError.js";
 
+
 export const createUser=async(user: z.infer<typeof userSchema>)=>{
   
         const newUser=await userModel.create({
@@ -94,7 +95,8 @@ export const deleteUser=async(id:string)=>{
 }
 export const getUserByEmail=async(email:string)=>{
    
-        const user=await userModel.findOne({email:email})
-        return user
+       return  await userModel.findOne({email:email})
+
+        
     
 }
